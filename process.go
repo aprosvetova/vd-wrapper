@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -12,6 +13,7 @@ const streamerExecutableName = "VirtualDesktop.Streamer.exe"
 
 func isVDProcessRunning() bool {
 	cmd := exec.Command("tasklist", "/FO", "CSV", "/FI", "IMAGENAME eq "+streamerExecutableName)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	output, err := cmd.Output()
 	if err != nil {
 		return false
@@ -21,6 +23,7 @@ func isVDProcessRunning() bool {
 
 func killVDProcess() error {
 	cmd := exec.Command("taskkill", "/F", "/IM", streamerExecutableName)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	err := cmd.Run()
 	return err
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -12,6 +13,7 @@ const streamerWindowTitle = "Virtual Desktop Streamer"
 
 func isVDWindowReady() bool {
 	cmd := exec.Command("powershell", "-Command", "Get-Process | Where-Object { $_.MainWindowTitle -eq '"+streamerWindowTitle+"' } | Select-Object -ExpandProperty MainWindowTitle")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
