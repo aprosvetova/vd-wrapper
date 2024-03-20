@@ -1,0 +1,23 @@
+on:
+    release:
+        types: [created]
+permissions:
+    contents: write
+    packages: write
+
+jobs:
+    release:
+      name: Release Go Binary
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      - uses: wangyoucao577/go-release-action@v1.49
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: windows
+          goarch: amd64
+          build_flags: -trimpath
+          ldflags: -s -w -X 'main.Version=${{ github.event.release.tag_name }}' -H=windowsgui
+          overwrite: TRUE
+          asset_name: vd-wrapper-${{ github.event.release.tag_name }}
+          compress_assets: FALSE
